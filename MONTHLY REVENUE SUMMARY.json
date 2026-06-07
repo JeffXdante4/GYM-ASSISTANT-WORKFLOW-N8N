@@ -1,0 +1,745 @@
+{
+  "name": "MONTHLY REVENUE SUMMARY",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "months",
+              "triggerAtHour": 20
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -176,
+        192
+      ],
+      "id": "cdff037d-eb05-4b09-8529-43424aa7a5d6",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1TxGibHi76IVhdbFcwws5mrPyXqx38EDeMrbXW55fQgI/edit?gid=103554614#gid=103554614",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 713434705,
+          "mode": "list",
+          "cachedResultName": "Revenue",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TxGibHi76IVhdbFcwws5mrPyXqx38EDeMrbXW55fQgI/edit#gid=713434705"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        48,
+        96
+      ],
+      "id": "e1991f89-816e-400a-b664-4e8a303d995e",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "usXEJSVCNHztZAqP",
+          "name": "GEOFFREY SHEETS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.data }}",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "options": {
+          "systemMessage": "You are a professional in report summarization, add context to this data .DON'T GIVE RECCOMMENDATIONS!\nminimum words 50\nOutput \"members report\" : \"String\"\n             \"Financial Report\" : \"String\" "
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        816,
+        192
+      ],
+      "id": "60699959-cb3d-49bb-8f15-e573825e40b3",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "devstral-medium-latest",
+        "options": {
+          "maxTokens": 1000,
+          "temperature": 0.7,
+          "maxRetries": 2,
+          "safeMode": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        720,
+        416
+      ],
+      "id": "5267acd3-05d6-4a27-b702-0d80a347a0e8",
+      "name": "Mistral Cloud Chat Model",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "EfDuHnNRcRT900aW",
+          "name": "Mistral Cloud account 9"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "devstral-medium-latest",
+        "options": {
+          "maxTokens": 1000,
+          "temperature": 0.7,
+          "maxRetries": 2,
+          "safeMode": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        848,
+        416
+      ],
+      "id": "3018e34a-93c5-4267-bee2-dde3cf94a596",
+      "name": "Mistral Cloud Chat Model1",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "EfDuHnNRcRT900aW",
+          "name": "Mistral Cloud account 9"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $now }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        976,
+        416
+      ],
+      "id": "c78130ba-22fb-47ff-af4c-8a6ced56c6b5",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\"members report\" : \"String\"\n ,\"Financial Report\" :\"String\"\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1104,
+        416
+      ],
+      "id": "4f069d76-d270-45c9-8c83-55bf5b0a35c9",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "model": "devstral-medium-latest",
+        "options": {
+          "maxTokens": 1000,
+          "temperature": 0.7,
+          "maxRetries": 2,
+          "safeMode": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        1184,
+        624
+      ],
+      "id": "278ad3bc-4166-45b1-b1c2-a4e02d8ce6dd",
+      "name": "Mistral Cloud Chat Model2",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "EfDuHnNRcRT900aW",
+          "name": "Mistral Cloud account 9"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1TxGibHi76IVhdbFcwws5mrPyXqx38EDeMrbXW55fQgI/edit?gid=103554614#gid=103554614",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1452867016,
+          "mode": "list",
+          "cachedResultName": "Attendance",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TxGibHi76IVhdbFcwws5mrPyXqx38EDeMrbXW55fQgI/edit#gid=1452867016"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        48,
+        288
+      ],
+      "id": "87722e00-d5db-4903-a80b-4e401f177a48",
+      "name": "Get row(s) in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "usXEJSVCNHztZAqP",
+          "name": "GEOFFREY SHEETS"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        272,
+        192
+      ],
+      "id": "218ea506-6d21-4e4f-8e62-4736b4318d84",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        496,
+        192
+      ],
+      "id": "c615163a-fd4d-4529-bbcc-2216577143b1",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.output }}",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "options": {
+          "systemMessage": "You are an expert at designing HTML Reports, construct a HTML  version for this.\nMake it professional "
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1504,
+        192
+      ],
+      "id": "00fa0363-6f21-403b-ab27-0d2ecbd5be97",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "model": "devstral-medium-latest",
+        "options": {
+          "maxTokens": 1000,
+          "temperature": 0.7,
+          "maxRetries": 2,
+          "safeMode": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        1472,
+        416
+      ],
+      "id": "e31a2707-ad80-46e9-acf8-610a85a3ef31",
+      "name": "Mistral Cloud Chat Model3",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "EfDuHnNRcRT900aW",
+          "name": "Mistral Cloud account 9"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "devstral-medium-latest",
+        "options": {
+          "maxTokens": 1000,
+          "temperature": 0.7,
+          "maxRetries": 2,
+          "safeMode": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        416
+      ],
+      "id": "d96c67ba-4857-4169-86f9-66140322d32e",
+      "name": "Mistral Cloud Chat Model4",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "EfDuHnNRcRT900aW",
+          "name": "Mistral Cloud account 9"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $now }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1728,
+        416
+      ],
+      "id": "863e5980-5a30-47f9-9942-0858d06d3995",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {
+        "content": "Schedule Trigger begins worklfow first day of every month at 8pm",
+        "height": 80,
+        "width": 192
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -240,
+        352
+      ],
+      "typeVersion": 1,
+      "id": "614810e4-bc13-4ae0-aef0-981bc0d93bc1",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "Information on attendance is fetched from Fit Life Member Details sheet",
+        "height": 80,
+        "width": 224
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        480
+      ],
+      "typeVersion": 1,
+      "id": "ce45e734-0a2e-436f-95cd-982502f94050",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "The two outputs are merged and presented into a list",
+        "height": 96,
+        "width": 256
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        320,
+        384
+      ],
+      "typeVersion": 1,
+      "id": "f35e5fc1-cecb-40c4-8c3b-cc8bc6b291cc",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "Information on revenue\n is fetched from Fit Life Member Details sheet",
+        "height": 80,
+        "width": 224
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        -16
+      ],
+      "typeVersion": 1,
+      "id": "a8dd64c3-dc33-4636-a712-45fc8da33a6a",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "AI Agent unites the members report and financial report and frmulates a summary",
+        "height": 80,
+        "width": 288
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        816,
+        64
+      ],
+      "typeVersion": 1,
+      "id": "a8341474-6675-4612-8153-8a5e291cdefc",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "A HTML Version of the Summary is crreated",
+        "height": 80
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1536,
+        64
+      ],
+      "typeVersion": 1,
+      "id": "0d6b37dd-87a8-400f-86d3-2634d51d0b0e",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "An Email of the summary is sent to the Gym manager",
+        "height": 80
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2240,
+        64
+      ],
+      "typeVersion": 1,
+      "id": "535975e7-8c87-40c2-adf2-d50b01babb20",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"Monthly report\":\"string\"\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1824,
+        544
+      ],
+      "id": "095a07c3-7e0d-4c56-a7db-52bb959ac096",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "model": "magistral-medium-latest",
+        "options": {
+          "maxTokens": 1000,
+          "safeMode": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        1888,
+        720
+      ],
+      "id": "8b1a32f1-bee4-4a0d-971d-3fdae3e50597",
+      "name": "Mistral Cloud Chat Model6",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "EfDuHnNRcRT900aW",
+          "name": "Mistral Cloud account 9"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "123mgeoffrey@gmail.com",
+        "subject": "Fit Life Monthly Report",
+        "message": "={{ $json.output['Monthly report'] }} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2336,
+        192
+      ],
+      "id": "92fe7b23-768e-4706-ac26-eabf676225d0",
+      "name": "Send a message to Manager",
+      "webhookId": "39778fd3-c2ce-4371-a83f-af82b451f746",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "DetG7WqjkQtOurns",
+          "name": "Gmail account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9c3664d7-5e51-4dcb-a9d9-805216eb2af1",
+              "name": "output['Monthly report']",
+              "value": "={{ $json.output['Monthly report'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1968,
+        192
+      ],
+      "id": "6c588ef3-812f-41ba-9145-78b4f18b392b",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "content": "Output HTML version of summary",
+        "height": 80
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1888,
+        64
+      ],
+      "typeVersion": 1,
+      "id": "ae104e9d-f371-4864-ac55-d4ca5e2b434e",
+      "name": "Sticky Note7"
+    }
+  ],
+  "pinData": {
+    "Edit Fields": [
+      {
+        "json": {
+          "output": {
+            "Monthly report": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>June Monthly Report</title>\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            line-height: 1.6;\n            margin: 0;\n            padding: 20px;\n            color: #333;\n        }\n        .header {\n            text-align: center;\n            margin-bottom: 30px;\n        }\n        .header h1 {\n            color: #2c3e50;\n        }\n        .report-section {\n            background-color: #f9f9f9;\n            border-radius: 8px;\n            padding: 20px;\n            margin-bottom: 20px;\n            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);\n        }\n        .report-section h2 {\n            color: #3498db;\n            border-bottom: 2px solid #3498db;\n            padding-bottom: 10px;\n        }\n        .report-section p {\n            margin: 10px 0;\n        }\n        .highlight {\n            background-color: #e8f4fc;\n            padding: 5px 10px;\n            border-radius: 4px;\n            font-weight: bold;\n        }\n        .footer {\n            text-align: center;\n            margin-top: 30px;\n            font-size: 0.9em;\n            color: #7f8c8d;\n        }\n    </style>\n</head>\n<body>\n    <div class=\"header\">\n        <h1>June Monthly Report</h1>\n    </div>\n\n    <div class=\"report-section\">\n        <h2>Members Report</h2>\n        <p>The members report for June indicates a total of <span class=\"highlight\">53 members</span>. The data includes details such as member ID, name, last visit date, missed days, and days visited this month.</p>\n        <p>Notable observations include:</p>\n        <ul>\n            <li>Varying attendance patterns among members.</li>\n            <li>Some members like <span class=\"highlight\">Grace Atieno</span> and <span class=\"highlight\">Monica Wanjala</span> have perfect attendance (<span class=\"highlight\">30 days</span>).</li>\n            <li>Others like <span class=\"highlight\">Peter Otieno</span> and <span class=\"highlight\">David Kiplangat</span> have lower attendance (<span class=\"highlight\">11 days</span>).</li>\n            <li>Some members have no recorded visits or missed days, indicating possible inaccuracies or new memberships.</li>\n        </ul>\n    </div>\n\n    <div class=\"report-section\">\n        <h2>Financial Report</h2>\n        <p>The financial report for June shows a total revenue of <span class=\"highlight\">Ksh520,500</span>. This revenue is generated from the <span class=\"highlight\">53 members</span>, reflecting the financial performance of the organization for the month.</p>\n        <p>The report does not provide additional details on expenses or profit margins.</p>\n    </div>\n\n    <div class=\"footer\">\n        <p>Generated on [Sunday June 7th 2026]</p>\n    </div>\n</body>\n</html>"
+          }
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get row(s) in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model6": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send a message to Manager",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "13ec9431-ec0e-42e7-924f-25bcb85fd9e4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e265c90c23f320f90455d8ba9ffeddbd49fd7a0fa3273b5fae89f5877a77d6a5"
+  },
+  "id": "oqnVyc5LUe4Ll5p4",
+  "tags": []
+}
