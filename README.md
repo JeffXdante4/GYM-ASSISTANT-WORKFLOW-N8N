@@ -1,0 +1,3 @@
+This automation is meant to welcome each new member to the gym.
+The workflow begins with a schedule trigger that runs every day at 8pm.It fetches data from a google sheet containing details of Fit Life members which is then mapped on a set node. An AI Agent is connected to formulate a custom greeting for the new members which is then validated by an IF node where a filter under the  condition If the joining day is today is placed.
+This outputs the data on a true path and hence the new members are mapped to a set node where their respective custom greetings are mapped too , and an email is sent to them through a Gmail node. The predefined greetings are then captured through a set node and the new members’ list is updated on a sheet. 
