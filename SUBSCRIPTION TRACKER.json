@@ -1,0 +1,1987 @@
+{
+  "name": "SUBSCRIPTION TRACKER",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5c00a4a6-b5fd-4e65-a64a-7e45c539b47a",
+              "name": "Member ID",
+              "value": "={{ $json['Member ID'] }}",
+              "type": "string"
+            },
+            {
+              "id": "a96b418c-2ce7-4b39-9d7b-531d728654da",
+              "name": "Member Name",
+              "value": "={{ $json['Member Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "8511b135-b64a-44fc-84c4-8d8234eb8310",
+              "name": "Join Date",
+              "value": "={{ $json['Join Date'] }}",
+              "type": "string"
+            },
+            {
+              "id": "44722c0a-c5c3-4567-a49c-4f3c3fc8c2b8",
+              "name": "Phone Number",
+              "value": "={{ $json['Phone Number'] }}",
+              "type": "number"
+            },
+            {
+              "id": "a9a545ad-4923-4a30-92cf-1953a8ee10ee",
+              "name": "Email",
+              "value": "={{ $json.Email }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1088,
+        256
+      ],
+      "id": "858864f7-6122-412f-a53e-371f64da1d33",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "weeksInterval": 3,
+              "triggerAtHour": 20
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -1536,
+        256
+      ],
+      "id": "26c62a6b-cad7-4196-bdf7-a6f597bded5a",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const joinDate = new Date(item.json[\"Join Date\"]);\n  const today = new Date();\n\n  const daysSinceJoining = Math.floor(\n    (today - joinDate) / (1000 * 60 * 60 * 24)\n  );\n\n  return {\n    json: {\n      ...item.json,\n      DaysSinceJoining: daysSinceJoining\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -864,
+        256
+      ],
+      "id": "a5d92019-4c4a-4282-88d8-9f477c4032e1",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9eea92bf-684a-499e-9300-df3ff030b803",
+              "name": "Member ID",
+              "value": "={{ $json['Member ID'] }}",
+              "type": "string"
+            },
+            {
+              "id": "6199f2e9-11e8-4aa8-a21b-70c5ea575c98",
+              "name": "Member Name",
+              "value": "={{ $json['Member Name'] }} ",
+              "type": "string"
+            },
+            {
+              "id": "c554b1b5-07ca-4cf1-879a-df0b02b3a0c2",
+              "name": "DaysSinceJoining",
+              "value": "={{ $json.DaysSinceJoining }}",
+              "type": "number"
+            },
+            {
+              "id": "00242d54-0782-4509-8f70-f1b46936a47c",
+              "name": "Email",
+              "value": "={{ $json.Email }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -640,
+        256
+      ],
+      "id": "971e37d7-ddbe-4930-baa7-29599fd5f388",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b4184200-f8cf-4bba-93a3-f9ec84a5aba4",
+              "leftValue": "={{ $json.DaysSinceJoining }}",
+              "rightValue": 30,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -416,
+        256
+      ],
+      "id": "38677f3b-06e5-42f2-bb39-8188b9b876e6",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "content": "If days are more than 30 the member is not new",
+        "height": 96,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -432,
+        112
+      ],
+      "typeVersion": 1,
+      "id": "de0de957-191f-4bee-a5d4-f5424516db56",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "Counts the number of days since joining",
+        "height": 96,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -880,
+        128
+      ],
+      "typeVersion": 1,
+      "id": "6e7e1268-33f9-45a2-a434-cd55e85e2f20",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "Output is counted in days and attaches results to each member",
+        "height": 96,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -656,
+        112
+      ],
+      "typeVersion": 1,
+      "id": "0ac49c7c-1713-4910-a314-8c504634efea",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "647e32d7-39c8-465c-813d-73ace645e433",
+              "name": "Member ID",
+              "value": "={{ $json['Member ID'] }}",
+              "type": "string"
+            },
+            {
+              "id": "b3658fd1-2afb-4ccd-a4f4-a6ee23c6f395",
+              "name": "Member Name",
+              "value": "={{ $json['Member Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "864d400d-65c8-4f6e-8820-d984a6d518b9",
+              "name": "DaysSinceJoining",
+              "value": "={{ $json.DaysSinceJoining }}",
+              "type": "string"
+            },
+            {
+              "id": "04644c33-1b12-40bc-8508-4b893d88a41e",
+              "name": "Email",
+              "value": "={{ $('Edit Fields1').item.json.Email }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -192,
+        160
+      ],
+      "id": "a7cda70a-72de-40d1-898e-5c985e36c234",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "647e32d7-39c8-465c-813d-73ace645e433",
+              "name": "Member ID",
+              "value": "={{ $json['Member ID'] }}",
+              "type": "string"
+            },
+            {
+              "id": "864d400d-65c8-4f6e-8820-d984a6d518b9",
+              "name": "DaysSinceJoining",
+              "value": "={{ $json.DaysSinceJoining }}",
+              "type": "number"
+            },
+            {
+              "id": "81c5c990-95aa-4720-bee2-602405e9e526",
+              "name": "Email",
+              "value": "={{ $('Edit Fields1').item.json.Email }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        256,
+        352
+      ],
+      "id": "579c9b9a-53ec-427b-a35d-429fbe4c51be",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n    const daysSinceJoining = item.json.DaysSinceJoining;\n    const daysLeftInSubscription = daysSinceJoining % 30;\n    \n    return {\n        name: item.json.Name,\n        daysLeftInSubscription: daysLeftInSubscription\n    };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        32,
+        160
+      ],
+      "id": "5aa01f41-66c1-4e0f-ac71-575e3b6386b8",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1ozJcatBAEhX1XvAY4otb8Zyv5d-fgkF79epO8rcyafA",
+          "mode": "list",
+          "cachedResultName": "Fit Life Member Details",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ozJcatBAEhX1XvAY4otb8Zyv5d-fgkF79epO8rcyafA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 830141955,
+          "mode": "list",
+          "cachedResultName": "Members",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ozJcatBAEhX1XvAY4otb8Zyv5d-fgkF79epO8rcyafA/edit#gid=830141955"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Member ID": "= {{ $('Edit Fields3').item.json['Member ID'] }}",
+            "Days Inside Subscription": "= {{ $json.daysLeftInSubscription }}",
+            "Member Name": "={{ $('Get row(s) in sheet1').item.json['Member Name'] }}",
+            "Email": "={{ $('Get row(s) in sheet1').item.json.Email }}"
+          },
+          "matchingColumns": [
+            "Member ID"
+          ],
+          "schema": [
+            {
+              "id": "Member ID",
+              "displayName": "Member ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Member Name",
+              "displayName": "Member Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Age",
+              "displayName": "Age",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Goal",
+              "displayName": "Goal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Join Date",
+              "displayName": "Join Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Days since Joining",
+              "displayName": "Days since Joining",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Days Inside Subscription",
+              "displayName": "Days Inside Subscription",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Membership Type",
+              "displayName": "Membership Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone Number",
+              "displayName": "Phone Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "R",
+              "displayName": "R",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        480,
+        160
+      ],
+      "id": "fd4ae390-5056-46e1-a27d-b68dc538fcf0",
+      "name": "Append or update row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "usXEJSVCNHztZAqP",
+          "name": "GEOFFREY SHEETS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Calculate days inside subscription with logic total days subtracted from 30 days that make up a month",
+        "height": 112,
+        "width": 182
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -16,
+        32
+      ],
+      "typeVersion": 1,
+      "id": "b57f2e90-632b-4c6e-a436-0531e78fe237",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1GPn3s_RpmHygJL9DCoMrGMpqhiTEWw9MC10zFddZkuE",
+          "mode": "list",
+          "cachedResultName": "FitLife_Gym_50_Members_Workflow_Data_Updated",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GPn3s_RpmHygJL9DCoMrGMpqhiTEWw9MC10zFddZkuE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1657070288,
+          "mode": "list",
+          "cachedResultName": "Members",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GPn3s_RpmHygJL9DCoMrGMpqhiTEWw9MC10zFddZkuE/edit#gid=1657070288"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1312,
+        256
+      ],
+      "id": "dfd71356-da3e-42d8-9bdb-a91cadf05c52",
+      "name": "Get row(s) in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "usXEJSVCNHztZAqP",
+          "name": "GEOFFREY SHEETS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1ozJcatBAEhX1XvAY4otb8Zyv5d-fgkF79epO8rcyafA/edit?gid=830141955#gid=830141955",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 830141955,
+          "mode": "list",
+          "cachedResultName": "Members",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ozJcatBAEhX1XvAY4otb8Zyv5d-fgkF79epO8rcyafA/edit#gid=830141955"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Member ID": "={{ $json['Member ID'] }}",
+            "Days since Joining": "=",
+            "Days Inside Subscription": "={{ $json.DaysSinceJoining }}",
+            "Member Name": "={{ $('Get row(s) in sheet1').item.json['Member Name'] }}",
+            "Email": "={{ $('Get row(s) in sheet1').item.json.Email }}"
+          },
+          "matchingColumns": [
+            "Member ID"
+          ],
+          "schema": [
+            {
+              "id": "Member ID",
+              "displayName": "Member ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Member Name",
+              "displayName": "Member Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Age",
+              "displayName": "Age",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Goal",
+              "displayName": "Goal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Join Date",
+              "displayName": "Join Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Days since Joining",
+              "displayName": "Days since Joining",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Days Inside Subscription",
+              "displayName": "Days Inside Subscription",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Membership Type",
+              "displayName": "Membership Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone Number",
+              "displayName": "Phone Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "R",
+              "displayName": "R",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        480,
+        352
+      ],
+      "id": "8e73eb55-4e66-4979-a1f9-ad447bcd8d3b",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "usXEJSVCNHztZAqP",
+          "name": "GEOFFREY SHEETS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Fetches all member records from the Fit Life Gym Google Sheet.\n",
+        "height": 80,
+        "width": 182
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1360,
+        128
+      ],
+      "typeVersion": 1,
+      "id": "8639bd54-f5e8-43ee-ae56-45c08b4c6cdb",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "Schedule trigger runs everyday at 8pm",
+        "height": 80,
+        "width": 182
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1584,
+        128
+      ],
+      "typeVersion": 1,
+      "id": "6740467d-4542-452a-876e-0e6ade92c106",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "Maps raw sheets columns to readable data on a list\n",
+        "height": 80,
+        "width": 182
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1120,
+        144
+      ],
+      "typeVersion": 1,
+      "id": "1055224f-af9e-46db-ad86-2f6bf2aa947b",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        704,
+        256
+      ],
+      "id": "01f60e69-90cb-454a-b38f-31c198ec1afa",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "cd9323c4-f429-4b29-a961-865623c774b1",
+              "leftValue": "= {{ $('Merge').item.json['Days Inside Subscription'] }}",
+              "rightValue": "=20",
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1136,
+        256
+      ],
+      "id": "94de8784-16ce-43d6-8145-24129e2871fd",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "💪 Your Fit Life Journey Isn't Over — Let's Keep Going!",
+        "emailType": "text",
+        "message": "=Hey {{ $json['Member Name'] }}!🎉\n\nGuess what? Your gym family misses you — and so does your favorite treadmill!\n\nYour subscription is coming up for renewal, and we want to make sure you don't skip a beat (or a rep 😄). You've worked so hard to get where you are — now is NOT the time to slow down!\n\n🔥 Renew today and keep the momentum going:\n✅ Unlimited access to all equipment & classes\n✅ Your favorite coaches, ready to push you further\n✅ A community that shows up for you every single day\n✅ Special renewal discounts for loyal members like YOU 🎉\n\nRenewing takes just 2 minutes — way easier than leg day, we promise. 🦵😂\n\n👉 Click here to renew your membership today!\n\nSee you on the floor!\n\nWith energy & encouragement ,\nFit Life Gym Team 🏋️\n\n📍 Fit Life Gym | 📞 [0716123307] | 🌐 [www.Fitlifegym.com]",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1584,
+        240
+      ],
+      "id": "6d5a60b5-861e-4842-a118-7fbaddf50dcb",
+      "name": "Send a message",
+      "webhookId": "b7f5bb89-cb76-4e4f-b0f7-0683805b2b11",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ccOnmk6sGjaXNKUy",
+          "name": "Gmail account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "New Members are mapped on a sheet\n",
+        "height": 96,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        464,
+        560
+      ],
+      "typeVersion": 1,
+      "id": "c32382e2-cf42-4529-8c9e-76eef0e87fae",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "content": "Member who paid last subscription (No of days in the new month)",
+        "height": 96,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        464,
+        32
+      ],
+      "typeVersion": 1,
+      "id": "268b7fdd-89a4-41a7-9219-15fa2c82b44d",
+      "name": "Sticky Note12"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1474479a-3c6c-49d3-b1a3-4a23ea8ef5c5",
+              "name": "Member ID",
+              "value": "={{ $json['Member ID'] }}",
+              "type": "string"
+            },
+            {
+              "id": "6e6ad4f9-305b-4d74-a879-0a0c036b3438",
+              "name": "Member Name",
+              "value": "= {{ $('Merge').item.json['Member Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "cd0f570d-5afe-4371-9ca3-a97c625ddb8d",
+              "name": "Days Inside Subscription",
+              "value": "={{ $json['Days Inside Subscription'] }}",
+              "type": "number"
+            },
+            {
+              "id": "2e4920e0-37fb-4861-9637-0649ae479213",
+              "name": "Email",
+              "value": "={{ $('Merge').item.json.Email }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1360,
+        240
+      ],
+      "id": "fa0c3137-21fe-43bc-9a9e-5c6d473293c9",
+      "name": "Edit Fields5"
+    },
+    {
+      "parameters": {
+        "content": "Details of Subscribed Members is mapped",
+        "height": 96,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -208,
+        48
+      ],
+      "typeVersion": 1,
+      "id": "696b8a85-7f89-4ba7-bd2c-1994a80056e3",
+      "name": "Sticky Note13"
+    },
+    {
+      "parameters": {
+        "content": "Details of New Members is mapped",
+        "height": 96,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        224,
+        560
+      ],
+      "typeVersion": 1,
+      "id": "777d5747-2040-4cda-b462-53f34a24088f",
+      "name": "Sticky Note14"
+    },
+    {
+      "parameters": {
+        "content": "Output data is merged\n",
+        "height": 80,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        688,
+        144
+      ],
+      "typeVersion": 1,
+      "id": "09610837-e50a-47e7-8ede-81ac132833c9",
+      "name": "Sticky Note15"
+    },
+    {
+      "parameters": {
+        "content": "If member is 20 days inside subscription ",
+        "height": 96,
+        "width": 182
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1104,
+        144
+      ],
+      "typeVersion": 1,
+      "id": "5bc6c332-47da-4386-93fa-bd7f00f6b878",
+      "name": "Sticky Note17"
+    },
+    {
+      "parameters": {
+        "content": "Output data is merged\n",
+        "height": 80,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        880,
+        144
+      ],
+      "typeVersion": 1,
+      "id": "8605cf46-e5c1-4f20-a3a5-43949dd10816",
+      "name": "Sticky Note18"
+    },
+    {
+      "parameters": {
+        "content": "Details of Members to be reminded  of subscription is mapped",
+        "height": 80,
+        "width": 182
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1344,
+        128
+      ],
+      "typeVersion": 1,
+      "id": "8fc665d8-0415-4574-8114-c8984251e3f7",
+      "name": "Sticky Note16"
+    },
+    {
+      "parameters": {
+        "content": "Split Out data",
+        "height": 96,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        240,
+        48
+      ],
+      "typeVersion": 1,
+      "id": "b526cba2-b614-4fa3-a643-4e61ca507c9e",
+      "name": "Sticky Note19"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "df9e30be-ca1d-4696-9060-32689ea60336",
+              "name": "Member ID",
+              "value": "={{ $json['Member ID'] }}",
+              "type": "string"
+            },
+            {
+              "id": "e54f41df-00f7-4ba9-b20f-e900e48f6a84",
+              "name": "Days Inside Subscription",
+              "value": "={{ $json['Days Inside Subscription'] }} ",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        912,
+        256
+      ],
+      "id": "80041600-ffda-4ab5-b720-4078f788e9d3",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {
+    "Get row(s) in sheet1": [
+      {
+        "json": {
+          "row_number": 2,
+          "Member ID": "KD345",
+          "Member Name": "Geoffrey Mwangi",
+          "Age": 22,
+          "Goal": "Endurance",
+          "Join Date": "2026-05-31",
+          "Days since Joining": 5,
+          "Days Inside Subscription": "",
+          "Membership Type": "Premium",
+          "Phone Number": 796334797,
+          "Email": "123mgeoffrey@gmail.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 3,
+          "Member ID": "KD346",
+          "Member Name": "Geoffrey Mwangi",
+          "Age": 22,
+          "Goal": "Endurance",
+          "Join Date": "2026-06-03",
+          "Days since Joining": 46,
+          "Days Inside Subscription": 16,
+          "Membership Type": "Premium",
+          "Phone Number": 796334797,
+          "Email": "geoffrey.maina2@student.moringaschool.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 4,
+          "Member ID": "KD346",
+          "Member Name": "Geoffrey Mwangi",
+          "Age": 22,
+          "Goal": "Endurance",
+          "Join Date": "2026-04-21",
+          "Days since Joining": "",
+          "Days Inside Subscription": "",
+          "Membership Type": "Premium",
+          "Phone Number": 796334797,
+          "Email": "geoffrey.maina2@student.moringaschool.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 5,
+          "Member ID": "KD346",
+          "Member Name": "Geoffrey Mwangi",
+          "Age": 22,
+          "Goal": "Endurance",
+          "Join Date": "2026-04-21",
+          "Days since Joining": "",
+          "Days Inside Subscription": "",
+          "Membership Type": "Premium",
+          "Phone Number": 796334797,
+          "Email": "geoffrey.maina2@student.moringaschool.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 6,
+          "Member ID": "KD346",
+          "Member Name": "Brian Mwangi",
+          "Age": 23,
+          "Goal": "Muscle Gain",
+          "Join Date": "2026-05-28",
+          "Days since Joining": "",
+          "Days Inside Subscription": "",
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "geoffrey.maina2@student.moringaschool.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 7,
+          "Member ID": "KD347",
+          "Member Name": "Faith Wanjiku",
+          "Age": 24,
+          "Goal": "General Fitness",
+          "Join Date": "2026-04-29",
+          "Days since Joining": 37,
+          "Days Inside Subscription": 8,
+          "Membership Type": "Premium",
+          "Phone Number": 796334797,
+          "Email": "m002@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 8,
+          "Member ID": "KD348",
+          "Member Name": "Kevin Kamau",
+          "Age": 25,
+          "Goal": "Strength Training",
+          "Join Date": "2026-04-11",
+          "Days since Joining": 55,
+          "Days Inside Subscription": 26,
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m003@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 9,
+          "Member ID": "KD349",
+          "Member Name": "Mercy Njeri",
+          "Age": 26,
+          "Goal": "Mobility",
+          "Join Date": "2026-06-02",
+          "Days since Joining": 3,
+          "Days Inside Subscription": "",
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m004@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 10,
+          "Member ID": "KD350",
+          "Member Name": "Dennis Kariuki",
+          "Age": 27,
+          "Goal": "Endurance",
+          "Join Date": "2026-05-29",
+          "Days since Joining": 7,
+          "Days Inside Subscription": "",
+          "Membership Type": "Premium",
+          "Phone Number": 796334797,
+          "Email": "m005@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 11,
+          "Member ID": "KD351",
+          "Member Name": "Sharon Nyambura",
+          "Age": 28,
+          "Goal": "Weight Loss",
+          "Join Date": "2026-04-22",
+          "Days since Joining": 44,
+          "Days Inside Subscription": 15,
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m006@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 12,
+          "Member ID": "KD352",
+          "Member Name": "Samuel Kiptoo",
+          "Age": 29,
+          "Goal": "Muscle Gain",
+          "Join Date": "2026-04-19",
+          "Days since Joining": 47,
+          "Days Inside Subscription": 18,
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m007@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 13,
+          "Member ID": "KD353",
+          "Member Name": "Purity Chebet",
+          "Age": 30,
+          "Goal": "General Fitness",
+          "Join Date": "2026-04-06",
+          "Days since Joining": 60,
+          "Days Inside Subscription": 1,
+          "Membership Type": "Premium",
+          "Phone Number": 796334797,
+          "Email": "m008@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 14,
+          "Member ID": "KD354",
+          "Member Name": "Peter Otieno",
+          "Age": 31,
+          "Goal": "Strength Training",
+          "Join Date": "2026-05-01",
+          "Days since Joining": 35,
+          "Days Inside Subscription": 6,
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m009@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 15,
+          "Member ID": "KD355",
+          "Member Name": "Lilian Akinyi",
+          "Age": 32,
+          "Goal": "Mobility",
+          "Join Date": "2026-05-12",
+          "Days since Joining": 24,
+          "Days Inside Subscription": "",
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m010@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 16,
+          "Member ID": "KD356",
+          "Member Name": "John Kiprotich",
+          "Age": 33,
+          "Goal": "Endurance",
+          "Join Date": "2026-06-05",
+          "Days since Joining": 0,
+          "Days Inside Subscription": "",
+          "Membership Type": "Premium",
+          "Phone Number": 796334797,
+          "Email": "m011@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 17,
+          "Member ID": "KD357",
+          "Member Name": "Anne Jelagat",
+          "Age": 34,
+          "Goal": "Weight Loss",
+          "Join Date": "2026-05-13",
+          "Days since Joining": 23,
+          "Days Inside Subscription": "",
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m012@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 18,
+          "Member ID": "KD358",
+          "Member Name": "Victor Mutua",
+          "Age": 35,
+          "Goal": "Muscle Gain",
+          "Join Date": "2026-04-18",
+          "Days since Joining": 48,
+          "Days Inside Subscription": 19,
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m013@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 19,
+          "Member ID": "KD359",
+          "Member Name": "Diana Muthoni",
+          "Age": 36,
+          "Goal": "General Fitness",
+          "Join Date": "2026-05-16",
+          "Days since Joining": 20,
+          "Days Inside Subscription": "",
+          "Membership Type": "Premium",
+          "Phone Number": 796334797,
+          "Email": "m014@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 20,
+          "Member ID": "KD360",
+          "Member Name": "Eric Ochieng",
+          "Age": 37,
+          "Goal": "Strength Training",
+          "Join Date": "2026-05-08",
+          "Days since Joining": 28,
+          "Days Inside Subscription": "",
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m015@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 21,
+          "Member ID": "KD361",
+          "Member Name": "Grace Atieno",
+          "Age": 38,
+          "Goal": "Mobility",
+          "Join Date": "2026-05-08",
+          "Days since Joining": 28,
+          "Days Inside Subscription": "",
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m016@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 22,
+          "Member ID": "KD362",
+          "Member Name": "Joseph Kibet",
+          "Age": 39,
+          "Goal": "Endurance",
+          "Join Date": "2026-04-24",
+          "Days since Joining": 42,
+          "Days Inside Subscription": 13,
+          "Membership Type": "Premium",
+          "Phone Number": 796334797,
+          "Email": "m017@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 23,
+          "Member ID": "KD363",
+          "Member Name": "Brenda Cherono",
+          "Age": 40,
+          "Goal": "Weight Loss",
+          "Join Date": "2026-04-25",
+          "Days since Joining": 41,
+          "Days Inside Subscription": 12,
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m018@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 24,
+          "Member ID": "KD364",
+          "Member Name": "Daniel Musyoka",
+          "Age": 41,
+          "Goal": "Muscle Gain",
+          "Join Date": "2026-05-21",
+          "Days since Joining": 15,
+          "Days Inside Subscription": "",
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m019@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 25,
+          "Member ID": "KD365",
+          "Member Name": "Esther Wairimu",
+          "Age": 42,
+          "Goal": "General Fitness",
+          "Join Date": "2026-05-09",
+          "Days since Joining": 27,
+          "Days Inside Subscription": "",
+          "Membership Type": "Premium",
+          "Phone Number": 796334797,
+          "Email": "m020@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 26,
+          "Member ID": "KD366",
+          "Member Name": "James Maina",
+          "Age": 43,
+          "Goal": "Strength Training",
+          "Join Date": "2026-04-26",
+          "Days since Joining": 40,
+          "Days Inside Subscription": 11,
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m021@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 27,
+          "Member ID": "KD367",
+          "Member Name": "Joyce Wangari",
+          "Age": 44,
+          "Goal": "Mobility",
+          "Join Date": "2026-05-13",
+          "Days since Joining": 23,
+          "Days Inside Subscription": "",
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m022@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 28,
+          "Member ID": "KD368",
+          "Member Name": "Paul Kimani",
+          "Age": 45,
+          "Goal": "Endurance",
+          "Join Date": "2026-04-09",
+          "Days since Joining": 57,
+          "Days Inside Subscription": 28,
+          "Membership Type": "Premium",
+          "Phone Number": 796334797,
+          "Email": "m023@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 29,
+          "Member ID": "KD369",
+          "Member Name": "Lucy Wambui",
+          "Age": 46,
+          "Goal": "Weight Loss",
+          "Join Date": "2026-06-01",
+          "Days since Joining": 4,
+          "Days Inside Subscription": "",
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m024@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 30,
+          "Member ID": "KD370",
+          "Member Name": "Allan Ndegwa",
+          "Age": 47,
+          "Goal": "Muscle Gain",
+          "Join Date": "2026-05-03",
+          "Days since Joining": 33,
+          "Days Inside Subscription": 4,
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m025@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 31,
+          "Member ID": "KD371",
+          "Member Name": "Caroline Waithera",
+          "Age": 48,
+          "Goal": "General Fitness",
+          "Join Date": "2026-05-18",
+          "Days since Joining": 18,
+          "Days Inside Subscription": "",
+          "Membership Type": "Premium",
+          "Phone Number": 796334797,
+          "Email": "m026@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 32,
+          "Member ID": "KD372",
+          "Member Name": "George Mwenda",
+          "Age": 49,
+          "Goal": "Strength Training",
+          "Join Date": "2026-04-18",
+          "Days since Joining": 48,
+          "Days Inside Subscription": 19,
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m027@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 33,
+          "Member ID": "KD373",
+          "Member Name": "Irene Nyokabi",
+          "Age": 22,
+          "Goal": "Mobility",
+          "Join Date": "2026-05-08",
+          "Days since Joining": 28,
+          "Days Inside Subscription": "",
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m028@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 34,
+          "Member ID": "KD374",
+          "Member Name": "David Kiplangat",
+          "Age": 23,
+          "Goal": "Endurance",
+          "Join Date": "2026-04-25",
+          "Days since Joining": 41,
+          "Days Inside Subscription": 12,
+          "Membership Type": "Premium",
+          "Phone Number": 796334797,
+          "Email": "m029@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 35,
+          "Member ID": "KD375",
+          "Member Name": "Ruth Jepchirchir",
+          "Age": 24,
+          "Goal": "Weight Loss",
+          "Join Date": "2026-05-11",
+          "Days since Joining": 25,
+          "Days Inside Subscription": "",
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m030@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 36,
+          "Member ID": "KD376",
+          "Member Name": "Mark Odhiambo",
+          "Age": 25,
+          "Goal": "Muscle Gain",
+          "Join Date": "2026-05-24",
+          "Days since Joining": 12,
+          "Days Inside Subscription": "",
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m031@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 37,
+          "Member ID": "KD377",
+          "Member Name": "Susan Akoth",
+          "Age": 26,
+          "Goal": "General Fitness",
+          "Join Date": "2026-04-15",
+          "Days since Joining": 51,
+          "Days Inside Subscription": 22,
+          "Membership Type": "Premium",
+          "Phone Number": 796334797,
+          "Email": "m032@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 38,
+          "Member ID": "KD378",
+          "Member Name": "Charles Njuguna",
+          "Age": 27,
+          "Goal": "Strength Training",
+          "Join Date": "2026-06-01",
+          "Days since Joining": 4,
+          "Days Inside Subscription": "",
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m033@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 39,
+          "Member ID": "KD379",
+          "Member Name": "Janet Wanjiru",
+          "Age": 28,
+          "Goal": "Mobility",
+          "Join Date": "2026-05-08",
+          "Days since Joining": 28,
+          "Days Inside Subscription": "",
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m034@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 40,
+          "Member ID": "KD380",
+          "Member Name": "Michael Githinji",
+          "Age": 29,
+          "Goal": "Endurance",
+          "Join Date": "2026-04-26",
+          "Days since Joining": 40,
+          "Days Inside Subscription": 11,
+          "Membership Type": "Premium",
+          "Phone Number": 796334797,
+          "Email": "m035@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 41,
+          "Member ID": "KD381",
+          "Member Name": "Monica Wanjala",
+          "Age": 30,
+          "Goal": "Weight Loss",
+          "Join Date": "2026-05-30",
+          "Days since Joining": 6,
+          "Days Inside Subscription": "",
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m036@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 42,
+          "Member ID": "KD382",
+          "Member Name": "Patrick Barasa",
+          "Age": 31,
+          "Goal": "Muscle Gain",
+          "Join Date": "2026-05-17",
+          "Days since Joining": 19,
+          "Days Inside Subscription": "",
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m037@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 43,
+          "Member ID": "KD383",
+          "Member Name": "Cynthia Nekesa",
+          "Age": 32,
+          "Goal": "General Fitness",
+          "Join Date": "2026-04-24",
+          "Days since Joining": 42,
+          "Days Inside Subscription": 13,
+          "Membership Type": "Premium",
+          "Phone Number": 796334797,
+          "Email": "m038@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 44,
+          "Member ID": "KD384",
+          "Member Name": "Timothy Muli",
+          "Age": 33,
+          "Goal": "Strength Training",
+          "Join Date": "2026-04-08",
+          "Days since Joining": 58,
+          "Days Inside Subscription": 29,
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m039@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 45,
+          "Member ID": "KD385",
+          "Member Name": "Agnes Kaluki",
+          "Age": 34,
+          "Goal": "Mobility",
+          "Join Date": "2026-04-16",
+          "Days since Joining": 50,
+          "Days Inside Subscription": 21,
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m040@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 46,
+          "Member ID": "KD386",
+          "Member Name": "Collins Koech",
+          "Age": 35,
+          "Goal": "Endurance",
+          "Join Date": "2026-05-20",
+          "Days since Joining": 16,
+          "Days Inside Subscription": "",
+          "Membership Type": "Premium",
+          "Phone Number": 796334797,
+          "Email": "m041@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 47,
+          "Member ID": "KD387",
+          "Member Name": "Beatrice Chepkemoi",
+          "Age": 36,
+          "Goal": "Weight Loss",
+          "Join Date": "2026-04-16",
+          "Days since Joining": 50,
+          "Days Inside Subscription": 21,
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m042@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 48,
+          "Member ID": "KD388",
+          "Member Name": "Alex Kiprono",
+          "Age": 37,
+          "Goal": "Muscle Gain",
+          "Join Date": "2026-05-20",
+          "Days since Joining": 16,
+          "Days Inside Subscription": "",
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m043@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 49,
+          "Member ID": "KD389",
+          "Member Name": "Naomi Jepkosgei",
+          "Age": 38,
+          "Goal": "General Fitness",
+          "Join Date": "2026-04-12",
+          "Days since Joining": 54,
+          "Days Inside Subscription": 25,
+          "Membership Type": "Premium",
+          "Phone Number": 796334797,
+          "Email": "m044@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 50,
+          "Member ID": "KD390",
+          "Member Name": "Martin Mwaura",
+          "Age": 39,
+          "Goal": "Strength Training",
+          "Join Date": "2026-05-08",
+          "Days since Joining": 28,
+          "Days Inside Subscription": "",
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m045@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 51,
+          "Member ID": "KD391",
+          "Member Name": "Hellen Nyambura",
+          "Age": 40,
+          "Goal": "Mobility",
+          "Join Date": "2026-04-18",
+          "Days since Joining": 48,
+          "Days Inside Subscription": 19,
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m046@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 52,
+          "Member ID": "KD392",
+          "Member Name": "Stephen Gitau",
+          "Age": 41,
+          "Goal": "Endurance",
+          "Join Date": "2026-05-19",
+          "Days since Joining": 17,
+          "Days Inside Subscription": "",
+          "Membership Type": "Premium",
+          "Phone Number": 796334797,
+          "Email": "m047@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 53,
+          "Member ID": "KD393",
+          "Member Name": "Mary Waceke",
+          "Age": 42,
+          "Goal": "Weight Loss",
+          "Join Date": "2026-04-12",
+          "Days since Joining": 54,
+          "Days Inside Subscription": 25,
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m048@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 54,
+          "Member ID": "KD394",
+          "Member Name": "Kevin Ouma",
+          "Age": 43,
+          "Goal": "Muscle Gain",
+          "Join Date": "2026-05-12",
+          "Days since Joining": 24,
+          "Days Inside Subscription": "",
+          "Membership Type": "Standard",
+          "Phone Number": 796334797,
+          "Email": "m049@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 55,
+          "Member ID": "KD395",
+          "Member Name": "Faith Adhiambo",
+          "Age": 44,
+          "Goal": "General Fitness",
+          "Join Date": "2026-05-02",
+          "Days since Joining": 34,
+          "Days Inside Subscription": 5,
+          "Membership Type": "Premium",
+          "Phone Number": 796334797,
+          "Email": "m050@fitlifegym.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 56,
+          "Member ID": "KD396",
+          "Member Name": "Edna kaire",
+          "Age": 44,
+          "Goal": "General Fitness",
+          "Join Date": "2026-06-04",
+          "Days since Joining": 1,
+          "Days Inside Subscription": "",
+          "Membership Type": "Premium",
+          "Phone Number": 89238873,
+          "Email": "geoffrey.maina2@student.moringaschool.com"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "b8f96b42-8cde-45ae-a1a8-7bc3f1e6cf6d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e265c90c23f320f90455d8ba9ffeddbd49fd7a0fa3273b5fae89f5877a77d6a5"
+  },
+  "id": "WvztJZtcmdm0YEtr",
+  "tags": []
+}
