@@ -7,7 +7,7 @@ This automation is meant to:
 3.Tracks subscription of members and persuade members prior to renew subscription if they are 20 days inside subscription window.
 
 4. Calculate total revenue generated from the two subscriptions for that month
-   
+
 5. A summarised monthly report sent to the gym owner showing the gym overal health for that month namely;
    
    (i)Member report
